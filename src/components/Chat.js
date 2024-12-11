@@ -5,16 +5,21 @@ import { faPlus, faPaperPlane, faFile, faSignOutAlt } from '@fortawesome/free-so
 import useAuthStore from '@/store/authStore'
 import styles from '@/styles/Chat.module.css'
 import { uploadToS3 } from '@/utils/s3Upload'
+import { callLambdaFunction } from '@/utils/lambda'
+
+
+
+const LAMBDA_URL = process.env.NEXT_PUBLIC_LAMBDA_URL;
 
 
 // 임시 AI 응답 목록
-const AI_RESPONSES = [
-  "흥미로운 의견이네요. 더 자세히 설명해주실 수 있나요?",
-  "네, 말씀하신 내용 잘 이해했습니다.",
-  "그렇군요. 제가 도움이 될 만한 제안을 해드릴 수 있을 것 같아요.",
-  "좋은 질문이에요! 한번 같이 살펴볼까요?",
-  "말씀하신 부분에 대해 조금 더 생각해볼 필요가 있을 것 같아요.",
-]
+// const AI_RESPONSES = [
+//   "흥미로운 의견이네요. 더 자세히 설명해주실 수 있나요?",
+//   "네, 말씀하신 내용 잘 이해했습니다.",
+//   "그렇군요. 제가 도움이 될 만한 제안을 해드릴 수 있을 것 같아요.",
+//   "좋은 질문이에요! 한번 같이 살펴볼까요?",
+//   "말씀하신 부분에 대해 조금 더 생각해볼 필요가 있을 것 같아요.",
+// ]
 
 export default function Chat() {
   const [messages, setMessages] = useState([])
@@ -43,22 +48,29 @@ export default function Chat() {
     }])
   }
 
-  // AI 응답 추가 함수
-  const addAIResponse = () => {
+  const addAIResponse = async () => {
     setIsTyping(true)
-    
-    // 1~3초 사이 랜덤 딜레이 후 응답
-    setTimeout(() => {
-      const randomResponse = AI_RESPONSES[Math.floor(Math.random() * AI_RESPONSES.length)]
+    try {
+      const data = await callLambdaFunction(newMessage)
       setMessages(prev => [...prev, {
         type: 'text',
-        content: randomResponse,
+        content: data.response,
         timestamp: new Date(),
         sender: 'AI Assistant'
       }])
+    } catch (error) {
+      console.error('Error getting AI response:', error)
+      setMessages(prev => [...prev, {
+        type: 'text',
+        content: 'Sorry, I encountered an error and couldn\'t get a response from the AI.',
+        timestamp: new Date(),
+        sender: 'AI Assistant'
+      }])
+    } finally {
       setIsTyping(false)
-    }, 1000 + Math.random() * 2000)
+    }
   }
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
