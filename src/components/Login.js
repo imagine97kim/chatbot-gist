@@ -10,9 +10,28 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const login = useAuthStore(state => state.login)
 
+  const validateCredentials = (username, password) => {
+    if (username === 'admin') {
+      return password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+    } else {
+      return password === process.env.NEXT_PUBLIC_USER_PASSWORD
+    }
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault()
-    // 실제 구현에서는 API 호출이 필요합니다
+    
+    if (!username || !password) {
+      alert('아이디와 비밀번호를 모두 입력해주세요.')
+      return
+    }
+
+    if (!validateCredentials(username, password)) {
+      alert('아이디 또는 비밀번호가 올바르지 않습니다.')
+      setPassword('') // 비밀번호 입력값 초기화
+      return
+    }
+
     login({ 
       username, 
       role: username === 'admin' ? 'admin' : 'user' 
@@ -35,6 +54,7 @@ export default function Login() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="아이디를 입력하세요"
+              required
             />
           </Form.Group>
           <Form.Group className={styles.formGroup}>
@@ -48,6 +68,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력하세요"
+              required
             />
           </Form.Group>
           <Button className={styles.loginButton} type="submit">
