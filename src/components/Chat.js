@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
-import { Container, Card, Button, Form, InputGroup } from 'react-bootstrap'
+import { Card, Button, Form, InputGroup } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faPaperPlane, faFile, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import useAuthStore from '@/store/authStore'
 import styles from '@/styles/Chat.module.css'
+import { uploadToS3 } from '@/utils/s3Upload'
+
 
 // 임시 AI 응답 목록
 const AI_RESPONSES = [
@@ -86,7 +88,22 @@ export default function Chat() {
     })
     
     // 파일 업로드 후 AI 응답 트리거
-    addAIResponse()
+    setIsTyping(true);
+
+    uploadFileToS3(file);
+    
+  }
+
+  const uploadFileToS3 = async (file) => {
+    const result = await uploadToS3(file);
+    console.log(result);
+    setMessages(prev => [...prev, {
+        type: 'text',
+        content: '파일 업로드가 완료되었습니다.',
+        timestamp: new Date(),
+        sender: 'AI Assistant'
+    }]);
+    setIsTyping(false);
   }
 
   return (
