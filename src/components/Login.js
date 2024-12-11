@@ -41,7 +41,7 @@ export default function Login() {
   return (
     <div className={styles.loginContainer}>
       <Card className={styles.loginCard}>
-        <h2 className={styles.title}>AI 채팅 어시스턴트</h2>
+        <h2 className={styles.title}>아이로</h2>
         <Form onSubmit={handleSubmit}>
           <Form.Group className={styles.formGroup}>
             <Form.Label className={styles.label}>

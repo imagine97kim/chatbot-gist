@@ -56,15 +56,15 @@ export default function Chat() {
         type: 'text',
         content: data.response,
         timestamp: new Date(),
-        sender: 'AI Assistant'
+        sender: '아이로'
       }])
     } catch (error) {
       console.error('Error getting AI response:', error)
       setMessages(prev => [...prev, {
         type: 'text',
-        content: 'Sorry, I encountered an error and couldn\'t get a response from the AI.',
+        content: '알 수 없는 오류가 발생했습니다.',
         timestamp: new Date(),
-        sender: 'AI Assistant'
+        sender: '아이로'
       }])
     } finally {
       setIsTyping(false)
@@ -121,7 +121,7 @@ export default function Chat() {
   return (
     <div className={styles.chatContainer}>
       <div className={styles.header}>
-        <h2 className={styles.title}>AI 채팅 어시스턴트</h2>
+        <h2 className={styles.title}>아이로</h2>
         <Button 
           className={styles.logoutButton}
           onClick={logout}
@@ -142,7 +142,7 @@ export default function Chat() {
               >
                 <div className={styles.message}>
                   <small className={styles.sender}>
-                    {msg.sender === user.username ? '나' : 'AI Assistant'}
+                    {msg.sender === user.username ? '나' : '아이로'}
                   </small>
                   <Card className={`${styles.messageContent} ${
                     msg.sender === user.username ? styles.userMessageContent : styles.aiMessageContent
@@ -175,7 +175,7 @@ export default function Chat() {
                   <Card className={styles.messageContent}>
                     <Card.Body className="p-0">
                       <div className={styles.typingIndicator}>
-                        <span>AI가 입력중</span>
+                        <span>아이로가 입력중</span>
                         <div className={styles.typingDot}></div>
                         <div className={styles.typingDot}></div>
                         <div className={styles.typingDot}></div>
