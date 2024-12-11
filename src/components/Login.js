@@ -1,6 +1,9 @@
 import { useState } from 'react'
-import { Form, Button, Container, Card } from 'react-bootstrap'
+import { Form, Button, Card } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faLock, faSignInAlt } from '@fortawesome/free-solid-svg-icons'
 import useAuthStore from '@/store/authStore'
+import styles from '@/styles/Login.module.css'
 
 export default function Login() {
   const [username, setUsername] = useState('')
@@ -17,33 +20,42 @@ export default function Login() {
   }
 
   return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-      <Card style={{ width: '300px' }}>
-        <Card.Body>
-          <Card.Title className="text-center mb-4">로그인</Card.Title>
-          <Form onSubmit={handleSubmit}>
-            <Form.Group className="mb-3">
-              <Form.Label>아이디</Form.Label>
-              <Form.Control
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>비밀번호</Form.Label>
-              <Form.Control
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Button variant="primary" type="submit" className="w-100">
-              로그인
-            </Button>
-          </Form>
-        </Card.Body>
+    <div className={styles.loginContainer}>
+      <Card className={styles.loginCard}>
+        <h2 className={styles.title}>AI 채팅 어시스턴트</h2>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className={styles.formGroup}>
+            <Form.Label className={styles.label}>
+              <FontAwesomeIcon icon={faUser} className="me-2" />
+              아이디
+            </Form.Label>
+            <Form.Control
+              className={styles.input}
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="아이디를 입력하세요"
+            />
+          </Form.Group>
+          <Form.Group className={styles.formGroup}>
+            <Form.Label className={styles.label}>
+              <FontAwesomeIcon icon={faLock} className="me-2" />
+              비밀번호
+            </Form.Label>
+            <Form.Control
+              className={styles.input}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호를 입력하세요"
+            />
+          </Form.Group>
+          <Button className={styles.loginButton} type="submit">
+            <FontAwesomeIcon icon={faSignInAlt} className="me-2" />
+            로그인
+          </Button>
+        </Form>
       </Card>
-    </Container>
+    </div>
   )
 } 

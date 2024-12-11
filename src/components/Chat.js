@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { Container, Card, Button, Form, InputGroup } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPaperPlane, faFile, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import useAuthStore from '@/store/authStore'
+import styles from '@/styles/Chat.module.css'
 
 // 임시 AI 응답 목록
 const AI_RESPONSES = [
@@ -89,93 +90,91 @@ export default function Chat() {
   }
 
   return (
-    <Container className="py-4">
-      <div className="d-flex justify-content-between mb-4">
-        <h2>채팅</h2>
-        <Button variant="secondary" onClick={logout}>로그아웃</Button>
-      </div>
-      <Card>
-        <Card.Body 
-          style={{ 
-            height: '70vh', 
-            display: 'flex', 
-            flexDirection: 'column' 
-          }}
+    <div className={styles.chatContainer}>
+      <div className={styles.header}>
+        <h2 className={styles.title}>AI 채팅 어시스턴트</h2>
+        <Button 
+          className={styles.logoutButton}
+          onClick={logout}
         >
-          <div 
-            className="messages-container mb-3" 
-            style={{ 
-              flex: 1, 
-              overflowY: 'auto',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '10px',
-              padding: '10px'
-            }}
-          >
+          <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />
+          로그아웃
+        </Button>
+      </div>
+      <Card className={styles.chatCard}>
+        <Card.Body className="d-flex flex-column p-0">
+          <div className={styles.messagesContainer}>
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`message ${msg.sender === user.username ? 'text-end' : ''}`}
+                className={`${styles.messageWrapper} ${
+                  msg.sender === user.username ? styles.userMessage : ''
+                }`}
               >
-                <small className="text-muted">{msg.sender}</small>
-                <Card
-                  style={{
-                    display: 'inline-block',
-                    maxWidth: '70%',
-                    backgroundColor: msg.sender === user.username ? '#007bff' : '#f8f9fa',
-                    color: msg.sender === user.username ? 'white' : 'black'
-                  }}
-                >
-                  <Card.Body className="py-2 px-3">
-                    {msg.type === 'file' ? (
-                      <div>
-                        <strong>파일:</strong> {msg.content.name}
-                        <br />
-                        <small>{(msg.content.size / 1024).toFixed(2)} KB</small>
-                      </div>
-                    ) : (
-                      msg.content
-                    )}
-                  </Card.Body>
-                </Card>
-                <small className="text-muted d-block">
-                  {new Date(msg.timestamp).toLocaleTimeString()}
-                </small>
+                <div className={styles.message}>
+                  <small className={styles.sender}>
+                    {msg.sender === user.username ? '나' : 'AI Assistant'}
+                  </small>
+                  <Card className={`${styles.messageContent} ${
+                    msg.sender === user.username ? styles.userMessageContent : styles.aiMessageContent
+                  }`}>
+                    <Card.Body className="p-0">
+                      {msg.type === 'file' ? (
+                        <div className={styles.fileMessage}>
+                          <FontAwesomeIcon icon={faFile} className={styles.fileIcon} />
+                          <div>
+                            <div className={styles.fileName}>{msg.content.name}</div>
+                            <div className={styles.fileSize}>
+                              {(msg.content.size / 1024).toFixed(2)} KB
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        msg.content
+                      )}
+                    </Card.Body>
+                  </Card>
+                  <small className={styles.timestamp}>
+                    {new Date(msg.timestamp).toLocaleTimeString()}
+                  </small>
+                </div>
               </div>
             ))}
             {isTyping && (
-              <div className="message">
-                <small className="text-muted">AI Assistant</small>
-                <Card
-                  style={{
-                    display: 'inline-block',
-                    maxWidth: '70%',
-                    backgroundColor: '#f8f9fa'
-                  }}
-                >
-                  <Card.Body className="py-2 px-3">
-                    <span className="typing-indicator">입력중...</span>
-                  </Card.Body>
-                </Card>
+              <div className={styles.messageWrapper}>
+                <div className={styles.message}>
+                  <Card className={styles.messageContent}>
+                    <Card.Body className="p-0">
+                      <div className={styles.typingIndicator}>
+                        <span>AI가 입력중</span>
+                        <div className={styles.typingDot}></div>
+                        <div className={styles.typingDot}></div>
+                        <div className={styles.typingDot}></div>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          <Form onSubmit={handleSubmit}>
-            <InputGroup>
-              <Form.Control
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="메시지를 입력하세요..."
-              />
-              <Button type="submit" variant="primary">
-                <FontAwesomeIcon icon={faPaperPlane} />
-              </Button>
-            </InputGroup>
-          </Form>
+          <div className={styles.inputContainer}>
+            <Form onSubmit={handleSubmit}>
+              <InputGroup>
+                <Form.Control
+                  className={styles.messageInput}
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="메시지를 입력하세요..."
+                />
+                <Button type="submit" className={styles.sendButton}>
+                  <FontAwesomeIcon icon={faPaperPlane} />
+                </Button>
+              </InputGroup>
+            </Form>
+          </div>
           
           {isAdmin && (
             <>
@@ -186,15 +185,7 @@ export default function Chat() {
                 style={{ display: 'none' }}
               />
               <Button 
-                variant="primary" 
-                style={{ 
-                  position: 'absolute', 
-                  bottom: '80px', 
-                  right: '20px',
-                  borderRadius: '50%',
-                  width: '50px',
-                  height: '50px'
-                }}
+                className={styles.uploadButton}
                 onClick={() => fileInputRef.current?.click()}
               >
                 <FontAwesomeIcon icon={faPlus} />
@@ -203,6 +194,6 @@ export default function Chat() {
           )}
         </Card.Body>
       </Card>
-    </Container>
+    </div>
   )
 } 
