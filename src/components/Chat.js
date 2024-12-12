@@ -7,20 +7,6 @@ import styles from '@/styles/Chat.module.css'
 import { uploadToS3 } from '@/utils/s3Upload'
 import { callLambdaFunction } from '@/utils/lambda'
 
-
-
-const LAMBDA_URL = process.env.NEXT_PUBLIC_LAMBDA_URL;
-
-
-// 임시 AI 응답 목록
-// const AI_RESPONSES = [
-//   "흥미로운 의견이네요. 더 자세히 설명해주실 수 있나요?",
-//   "네, 말씀하신 내용 잘 이해했습니다.",
-//   "그렇군요. 제가 도움이 될 만한 제안을 해드릴 수 있을 것 같아요.",
-//   "좋은 질문이에요! 한번 같이 살펴볼까요?",
-//   "말씀하신 부분에 대해 조금 더 생각해볼 필요가 있을 것 같아요.",
-// ]
-
 export default function Chat() {
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
@@ -107,13 +93,23 @@ export default function Chat() {
   }
 
   const uploadFileToS3 = async (file) => {
+    if (file.size > 10 * 1024 * 1024) {
+      setMessages(prev => [...prev, {
+        type: 'text',
+        content: '파일 크기가 너무 큽니다. 10MB 이하의 파일만 업로드할 수 있습니다.',
+        timestamp: new Date(),
+        sender: '아이로'
+      }]);
+      setIsTyping(false);
+      return;
+    }
     const result = await uploadToS3(file);
     console.log(result);
     setMessages(prev => [...prev, {
         type: 'text',
         content: '파일 업로드가 완료되었습니다.',
         timestamp: new Date(),
-        sender: 'AI Assistant'
+        sender: '아이로'
     }]);
     setIsTyping(false);
   }
