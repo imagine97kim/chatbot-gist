@@ -171,7 +171,7 @@ export default function Chat() {
                   <Card className={styles.messageContent}>
                     <Card.Body className="p-0">
                       <div className={styles.typingIndicator}>
-                        <span>아이로가 입력중</span>
+                        <span>아이로가 답변중</span>
                         <div className={styles.typingDot}></div>
                         <div className={styles.typingDot}></div>
                         <div className={styles.typingDot}></div>
