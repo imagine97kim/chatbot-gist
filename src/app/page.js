@@ -7,11 +7,15 @@ import Chat from '@/components/Chat'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function Home() {
-  const isLoggedIn = useAuthStore(state => state.isLoggedIn)
+  const { isLoggedIn, isLoading } = useAuthStore()
 
-  return (
-    <main>
-      {isLoggedIn ? <Chat /> : <Login />}
-    </main>
-  )
+  if (isLoading) {
+    return (
+      <div className={"loadingContainer"}>
+        <div className={"loadingSpinner"}></div>
+      </div>
+    )
+  }
+
+  return isLoggedIn ? <Chat /> : <Login />
 }
