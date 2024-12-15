@@ -4,10 +4,7 @@ export async function POST(request) {
   const body = await request.json()
   const { username, role } = body
 
-  // 실제 인증 로직은 여기서 구현
-
-  // 쿠키 설정
-  cookies().set({
+  const cookieData = {
     name: 'auth',
     value: JSON.stringify({ username, role }),
     httpOnly: true,
@@ -15,7 +12,19 @@ export async function POST(request) {
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 7
-  })
+  }
 
-  return Response.json({ success: true })
+  // 쿠키 설정
+  cookies().set(cookieData)
+
+  // 응답 헤더에 Set-Cookie를 명시적으로 포함
+  return new Response(
+    JSON.stringify({ success: true }), 
+    {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }
+  )
 } 
