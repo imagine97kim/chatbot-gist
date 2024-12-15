@@ -253,23 +253,25 @@
 } 
 
 .citationNumber {
-  cursor: pointer;
-  color: #007bff;
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 4px;
 }
-  
+
 .citationNumber:hover {
-text-decoration: underline;
+    text-decoration: underline;
 }
 
 .referenceItem {
-    margin-bottom: 8px;
-  }
-  
-  .referenceItem:last-child {
+    margin-bottom: 16px;
+    word-break: break-all;
+}
+
+.referenceItem:last-child {
     margin-bottom: 0;
-  }
-  
-  .referenceItem hr {
-    margin: 8px 0;
+}
+
+.referenceItem hr {
+    margin: 16px 0;
     border-top: 1px solid rgba(0,0,0,0.1);
-  }
+}

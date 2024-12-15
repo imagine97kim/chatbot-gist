@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Card, Button, Form, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Card, Button, Form, InputGroup, Modal } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faPaperPlane, faFile, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import useAuthStore from '@/store/authStore'
@@ -13,6 +13,8 @@ export default function Chat() {
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef(null)
   const fileInputRef = useRef(null)
+  const [showModal, setShowModal] = useState(false)
+  const [selectedCitation, setSelectedCitation] = useState(null)
 
   const isAdmin = useAuthStore((state) => state.isAdmin)
   const user = useAuthStore((state) => state.user)
@@ -159,25 +161,15 @@ export default function Chat() {
                         msg.citations ? msg.citations.map((citation, index) => (
                           <div key={index} className={styles.citation}>
                             {citation.generatedResponsePart.textResponsePart.text}
-                            <OverlayTrigger
-                              placement="top"
-                              overlay={
-                                <Tooltip id={`citation-tooltip-${index}`}>
-                                  <div>
-                                    {citation.retrievedReferences.map((reference, refIndex) => (
-                                      <div key={refIndex} className={styles.referenceItem}>
-                                        <strong>출처 {refIndex + 1}:</strong> {reference.location.s3Location.uri}
-                                        <br />
-                                        <strong>인용 내용 {refIndex + 1}:</strong> {reference.content.text.substring(0, 100)}...
-                                        {refIndex < citation.retrievedReferences.length - 1 && <hr />}
-                                      </div>
-                                    ))}
-                                  </div>
-                                </Tooltip>
-                              }
+                            <span 
+                              className={styles.citationNumber}
+                              onClick={() => {
+                                setSelectedCitation(citation);
+                                setShowModal(true);
+                              }}
                             >
-                              <span className={styles.citationNumber}>{`[${index + 1}]`}</span>
-                            </OverlayTrigger>
+                              {`[${index + 1}]`}
+                            </span>
                           </div>
                         )) : msg.content
                       )}
@@ -243,6 +235,25 @@ export default function Chat() {
           )}
         </Card.Body>
       </Card>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>인용 정보</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedCitation && selectedCitation.retrievedReferences.map((reference, refIndex) => (
+            <div key={refIndex} className={styles.referenceItem}>
+              <strong>출처 {refIndex + 1}:</strong> {reference.location.s3Location.uri}
+              <br />
+              <strong>인용 내용 {refIndex + 1}:</strong> {reference.content.text}
+              {refIndex < selectedCitation.retrievedReferences.length - 1 && <hr />}
+            </div>
+          ))}
+        </Modal.Body>
+      </Modal>
     </div>
   )
 } 
