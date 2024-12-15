@@ -44,7 +44,7 @@ export default function Chat() {
         type: 'text',
         content: data.response,
         timestamp: new Date(),
-        sender: '아이로',
+        sender: '아이로 (AI Law)',
         citations: data.citations
       }])
     } catch (error) {
