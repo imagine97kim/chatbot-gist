@@ -275,3 +275,30 @@
     margin: 16px 0;
     border-top: 1px solid rgba(0,0,0,0.1);
 }
+
+.citationModal {
+  max-width: 600px;
+}
+
+.citationModalBody {
+  height: 400px;
+  overflow-y: auto;
+}
+
+.citationModalBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.citationModalBody::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.citationModalBody::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.citationModalBody::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

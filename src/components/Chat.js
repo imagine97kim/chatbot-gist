@@ -239,11 +239,12 @@ export default function Chat() {
         show={showModal}
         onHide={() => setShowModal(false)}
         centered
+        dialogClassName={styles.citationModal}
       >
         <Modal.Header closeButton>
           <Modal.Title>인용 정보</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className={styles.citationModalBody}>
           {selectedCitation && selectedCitation.retrievedReferences.map((reference, refIndex) => (
             <div key={refIndex} className={styles.referenceItem}>
               <strong>출처 {refIndex + 1}:</strong> {reference.location.s3Location.uri}
