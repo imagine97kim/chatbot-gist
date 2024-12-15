@@ -251,3 +251,25 @@
     max-width: 90%;
   }
 } 
+
+.citationNumber {
+  cursor: pointer;
+  color: #007bff;
+}
+  
+.citationNumber:hover {
+text-decoration: underline;
+}
+
+.referenceItem {
+    margin-bottom: 8px;
+  }
+  
+  .referenceItem:last-child {
+    margin-bottom: 0;
+  }
+  
+  .referenceItem hr {
+    margin: 8px 0;
+    border-top: 1px solid rgba(0,0,0,0.1);
+  }

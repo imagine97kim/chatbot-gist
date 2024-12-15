@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Card, Button, Form, InputGroup } from 'react-bootstrap'
+import { Card, Button, Form, InputGroup, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faPaperPlane, faFile, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import useAuthStore from '@/store/authStore'
@@ -42,7 +42,8 @@ export default function Chat() {
         type: 'text',
         content: data.response,
         timestamp: new Date(),
-        sender: '아이로'
+        sender: '아이로',
+        citations: data.citations
       }])
     } catch (error) {
       console.error('Error getting AI response:', error)
@@ -155,7 +156,30 @@ export default function Chat() {
                           </div>
                         </div>
                       ) : (
-                        msg.content
+                        msg.citations ? msg.citations.map((citation, index) => (
+                          <div key={index} className={styles.citation}>
+                            {citation.generatedResponsePart.textResponsePart.text}
+                            <OverlayTrigger
+                              placement="top"
+                              overlay={
+                                <Tooltip id={`citation-tooltip-${index}`}>
+                                  <div>
+                                    {citation.retrievedReferences.map((reference, refIndex) => (
+                                      <div key={refIndex} className={styles.referenceItem}>
+                                        <strong>출처 {refIndex + 1}:</strong> {reference.location.s3Location.uri}
+                                        <br />
+                                        <strong>인용 내용 {refIndex + 1}:</strong> {reference.content.text.substring(0, 100)}...
+                                        {refIndex < citation.retrievedReferences.length - 1 && <hr />}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </Tooltip>
+                              }
+                            >
+                              <span className={styles.citationNumber}>{`[${index + 1}]`}</span>
+                            </OverlayTrigger>
+                          </div>
+                        )) : msg.content
                       )}
                     </Card.Body>
                   </Card>
