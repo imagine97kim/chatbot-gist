@@ -8,7 +8,7 @@ export async function POST(request) {
     name: 'auth',
     value: JSON.stringify({ username, role }),
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 7
@@ -17,7 +17,6 @@ export async function POST(request) {
   // 쿠키 설정
   cookies().set(cookieData)
 
-  // 응답 헤더에 Set-Cookie를 명시적으로 포함
   return new Response(
     JSON.stringify({ success: true }), 
     {
